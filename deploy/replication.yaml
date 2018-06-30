@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: hellows
+  labels:
+    name: hellows
+spec:
+  replicas: 3
+  selector:
+    name: hellows
+  template:
+    metadata:
+      labels:
+        name: hellows
+    spec:
+      containers:
+      - name: hellows
+        image: kdobmayer/hellows:latest
+        ports:
+        - containerPort: 8080
+        livenessProbe:
+          httpGet:
+            path: /hello
+            port: 8080
+          initialDelaySeconds: 15
+          timeoutSeconds: 1
+        readinessProbe:
+          exec:
+            command: ["/usr/bin/ready.sh"]
+          initialDelaySeconds: 15
+          timeoutSeconds: 1
+        resources:
+          limits:
+            memory: "100Mi"
+            cpu: "100m"
+

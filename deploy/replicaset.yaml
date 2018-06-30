@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: hellows-rs
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: hellows
+      deployment: test
+    matchExpressions:
+      - {key: name, operator: In, values: [hellows-rs]}
+  template:
+    metadata:
+      labels:
+        name: hellows-rs
+        app: hellows
+        deployment: test
+    spec:
+      containers:
+      - name: hellows-rs
+        image: kdobmayer/hellows:latest
+        ports:
+        - containerPort: 80

@@ -1,0 +1,65 @@
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: test
+---
+#kind: ResourceQuota
+#apiVersion: v1
+#metadata:
+#  name: test-quotas
+#  namespace: test
+#spec:
+#  hard:
+#    pods: 3
+#    services: 1
+#---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: hello-deploy
+  namespace: test
+spec:
+  selector:
+    matchLabels:
+      app: hello-app
+      namespace: test
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: hello-app
+        namespace: test
+    spec:
+      containers:
+      - name: hello-app
+        image: kdobmayer/hellows:latest
+        ports:
+        - containerPort: 8080
+        livenessProbe:
+          httpGet:
+            path: /hello
+            port: 8080
+          initialDelaySeconds: 15
+          timeoutSeconds: 1
+        readinessProbe:
+          exec:
+            command: ["/usr/bin/ready.sh"]
+          initialDelaySeconds: 15
+          timeoutSeconds: 1
+        resources:
+          limits:
+            memory: "100Mi"
+            cpu: "100m"
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: hello-svc
+  namespace: test
+spec:
+  selector:
+    app: hello-app
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 8080
