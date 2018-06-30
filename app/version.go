@@ -4,7 +4,7 @@ import (
 	"net/http"
 )
 
-const version = "latest"
+const version = "v1"
 
 type versionResponse struct {
 	Version string `json:"version"`

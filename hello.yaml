@@ -3,16 +3,16 @@ apiVersion: v1
 metadata:
   name: test
 ---
-#kind: ResourceQuota
-#apiVersion: v1
-#metadata:
-#  name: test-quotas
-#  namespace: test
-#spec:
-#  hard:
-#    pods: 3
-#    services: 1
-#---
+kind: ResourceQuota
+apiVersion: v1
+metadata:
+  name: test-quotas
+  namespace: test
+spec:
+  hard:
+    pods: 6
+    services: 2
+---
 kind: Deployment
 apiVersion: apps/v1
 metadata:
@@ -32,7 +32,7 @@ spec:
     spec:
       containers:
       - name: hello-app
-        image: kdobmayer/hellows:latest
+        image: kdobmayer/hellows:v1
         ports:
         - containerPort: 8080
         livenessProbe:

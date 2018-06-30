@@ -10,13 +10,13 @@ get_ip() {
   echo "${external_ip}"
 }
 
-#docker build -t kdobmayer/hellows .
-#docker push kdobmayer/hellows:latest
+docker build -t kdobmayer/hellows:v1 .
+docker push kdobmayer/hellows:v1
 
 kubens test
 kubectl delete svc hello-svc
 kubectl delete deploy hello-deploy
-#kubectl delete quota test-quotas
+kubectl delete quota test-quotas
 kubectl delete ns test
 
 while kubectl get ns | grep -qc test; do
@@ -25,22 +25,22 @@ while kubectl get ns | grep -qc test; do
 done
 echo "Done!"
 
-#kubectl create -f ./hello.yaml
-#kubectl get pods
-#
-#until get_ip >/dev/null; do
-#  printf "\rWaiting for external ip..."
-#  sleep 5 
-#done
-#echo "Done!"
-#
-#external_ip=$(get_ip)
-#for ((i=0; i<10; i++)); do
-#  pod="$(curl -sS http://${external_ip}/hello | awk -F- '{print $NF}')"
-#  # remove the trailing exclamation mark '!'
-#  echo "${pod::-1}"
-#  sleep 1
-#done
+kubectl create -f ./hello.yaml
+kubectl get pods
+
+until get_ip >/dev/null; do
+  printf "\rWaiting for external ip..."
+  sleep 5 
+done
+echo "Done!"
+
+external_ip=$(get_ip)
+for ((i=0; i<10; i++)); do
+  pod="$(curl -sS http://${external_ip}/hello | awk -F- '{print $NF}')"
+  # remove the trailing exclamation mark '!'
+  echo "${pod::-1}"
+  sleep 1
+done
 
 kubens default
 
